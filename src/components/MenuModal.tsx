@@ -3,7 +3,9 @@ import { gsap } from "gsap";
 import type { MenuItem } from "@/data/menu";
 import { X, Phone, MessageCircle, ShoppingBag, Copy, Check } from "lucide-react";
 
-const ZOMATO = "https://www.zomato.com/proddatur/cafe-26-proddatur-locality/order";
+const ZOMATO_BASE = "https://www.zomato.com/proddatur/cafe-26-proddatur-locality/order";
+const zomatoLinkFor = (name: string) =>
+  `${ZOMATO_BASE}?utm_source=cafe26_site&utm_medium=menu_modal&utm_campaign=preselect&search=${encodeURIComponent(name)}#${encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"))}`;
 
 export function MenuModal({ item, onClose }: { item: MenuItem | null; onClose: () => void }) {
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -96,13 +98,13 @@ export function MenuModal({ item, onClose }: { item: MenuItem | null; onClose: (
 
           <div className="grid sm:grid-cols-3 gap-3">
             <a
-              href={ZOMATO}
+              href={zomatoLinkFor(item.name)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-primary-foreground glow-primary transition hover:scale-[1.02]"
               style={{ background: "var(--gradient-primary)" }}
             >
-              <ShoppingBag className="w-5 h-5" /> Order on Zomato
+              <ShoppingBag className="w-5 h-5" /> Order {item.name.split(" ")[0]} on Zomato
             </a>
             <a
               href={waLink}

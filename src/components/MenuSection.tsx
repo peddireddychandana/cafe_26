@@ -3,6 +3,11 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { menu, categories, type MenuItem } from "@/data/menu";
 import { MenuModal, VegBadge } from "./MenuModal";
+import { ShoppingBag } from "lucide-react";
+
+const ZOMATO_BASE = "https://www.zomato.com/proddatur/cafe-26-proddatur-locality/order";
+export const zomatoLinkFor = (name: string) =>
+  `${ZOMATO_BASE}?utm_source=cafe26_site&utm_medium=menu_card&utm_campaign=preselect&search=${encodeURIComponent(name)}#${encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"))}`;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -62,12 +67,15 @@ export function MenuSection() {
 
         <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {items.map((item) => (
-            <button
+            <div
               key={item.id}
-              onClick={() => setSelected(item)}
-              className="menu-card text-left glass rounded-2xl overflow-hidden card-hover group"
+              className="menu-card relative text-left glass rounded-2xl overflow-hidden card-hover group flex flex-col"
             >
-              <div className="relative h-52 overflow-hidden">
+              <button
+                onClick={() => setSelected(item)}
+                aria-label={`View ${item.name}`}
+                className="relative h-52 overflow-hidden block"
+              >
                 <img
                   src={item.image}
                   alt={item.name}
@@ -88,15 +96,27 @@ export function MenuSection() {
                 <div className="absolute top-3 right-3">
                   <VegBadge veg={item.veg} />
                 </div>
-              </div>
-              <div className="p-5">
-                <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition">{item.name}</h3>
-                <div className="flex items-center justify-between">
+              </button>
+              <div className="p-5 flex-1 flex flex-col">
+                <button onClick={() => setSelected(item)} className="text-left">
+                  <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition">{item.name}</h3>
+                </button>
+                <div className="flex items-center justify-between mb-4">
                   <span className="text-xs text-muted-foreground uppercase tracking-wider">{item.category}</span>
                   <span className="font-bold text-xl gradient-text">{item.price}</span>
                 </div>
+                <a
+                  href={zomatoLinkFor(item.name)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-primary-foreground glow-primary transition hover:scale-[1.02]"
+                  style={{ background: "var(--gradient-primary)" }}
+                >
+                  <ShoppingBag className="w-4 h-4" /> Order on Zomato
+                </a>
               </div>
-            </button>
+            </div>
           ))}
         </div>
       </div>
